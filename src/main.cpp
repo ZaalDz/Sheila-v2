@@ -25,5 +25,19 @@ void setup() {
     pinMode(4, INPUT);
 }
 void loop() {
-    car.forward(100);
+
+    if (Serial.available() > 0) {
+        String request = Serial.readStringUntil('\n');
+
+        int delimiterIndex = request.indexOf("#");
+
+        String direction = request.substring(0, delimiterIndex);
+
+        uint8_t speed = request.substring(delimiterIndex + 1).toInt();
+
+        Serial.println("received command:\t"  + direction + " " + speed);
+
+        car.move(direction, speed);
+    }
+
 }

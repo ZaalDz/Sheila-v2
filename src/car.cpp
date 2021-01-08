@@ -11,8 +11,12 @@ private:
     Motor* right_backward_motor = new Motor(12, 38, 39, 4);
     const uint8_t MOTOR_FIX_UP_ROTATE_THRESHOLD = 30;
     SpeedDifference* speedDifference = new SpeedDifference();
+
     uint8_t speed = 0;
     Direction carDirection = Direction::STOP;
+    String directionArray[5] = {"STOP", "FORWARD", "BACKWARD", "LEFT", "RIGHT"};
+    
+
     void fixUpMotorSpeed(uint16_t r1, uint16_t r2, uint16_t r3, uint16_t r4){
         uint16_t min_r = min(min(r1, r2), min(r3, r4));
         uint16_t deltaR1 = r1 - min_r;
@@ -26,6 +30,8 @@ private:
         left_backward_motor->resetWheelRotationCounter();
         right_backward_motor->resetWheelRotationCounter();
     }
+
+
     void updateWheelRotationCounters(){
         left_forward_motor->updateWheelRotationCounter();
         right_forward_motor->updateWheelRotationCounter();
@@ -40,7 +46,11 @@ private:
             this->fixUpMotorSpeed(r1, r2, r3, r4);
         }
     }
+
+
 public:
+
+
     void forward(const uint8_t speed){
         this->speed = speed;
         if (this->carDirection != Direction::FORWARD){
@@ -54,6 +64,8 @@ public:
         right_backward_motor->forward(speed + speedDifference->right_backward_motor);
         this->carDirection = Direction::FORWARD;
     }
+
+
     void backward(const uint8_t speed){
         this->speed = speed;
         if (this->carDirection != Direction::BACKWARD){
@@ -67,6 +79,8 @@ public:
         right_backward_motor->backward(speed + speedDifference->right_backward_motor);
         this->carDirection = Direction::BACKWARD;
     }
+
+
     void left(const uint8_t speed){
         this->speed = speed;
         if (this->carDirection != Direction::LEFT){
@@ -80,6 +94,8 @@ public:
         right_backward_motor->forward(speed + speedDifference->right_backward_motor);
         this->carDirection = Direction::LEFT;
     }
+
+
     void right(const uint8_t speed){
         this->speed = speed;
         if (this->carDirection != Direction::RIGHT){
@@ -93,6 +109,8 @@ public:
         right_backward_motor->backward(speed + speedDifference->right_backward_motor);
         this->carDirection = Direction::RIGHT;
     }
+
+
     void stop(){
         left_forward_motor->stop();
         right_forward_motor->stop();
@@ -102,6 +120,27 @@ public:
         this->speedDifference->reset();
         this->speed = 0;
     }
+    
+    void move(String direction, uint8_t speed){
+        if (direction == this->directionArray[Direction::FORWARD])
+        {
+            this->forward(speed);
+        } 
+        else if (direction == this->directionArray[Direction::BACKWARD]){
+            this->backward(speed);
+        } 
+        else if (direction == this->directionArray[Direction::LEFT]){
+            this->left(speed);
+        } 
+        else if (direction == this->directionArray[Direction::RIGHT]){
+            this->right(speed);
+        } 
+        else
+        {
+            this->stop();
+        }
+    }
+
     ~Car(){
         delete left_forward_motor;
         delete left_backward_motor;
