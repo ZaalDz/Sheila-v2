@@ -5,10 +5,37 @@
     </head>
     <body>
         <div class="container">
+<!--            <video src="http://0.0.0.0:5000/video"> </video>-->
             <img src="http://0.0.0.0:5000/video">
         </div>
+    <script>
+        let keyPressedSet = new Set()
+
+        function sendRequest(pressedKeyboardSet){
+            let data = JSON.stringify({
+                    pressedKeysSet: Array.from(pressedKeyboardSet),
+                    speed: 100
+                  })
+            fetch("http://0.0.0.0:5000/move", {
+                  method: "post",
+                  headers: {'Accept': 'application/json', 'Content-Type': 'application/json'},
+                  //make sure to serialize your JSON body
+                  body: data
+                })
+                //.then( (response) => {
+                //       console.log(response);
+                //    });
+        }
+        document.addEventListener('keyup', (e) => {
+            if (keyPressedSet.has(e.code)){
+                keyPressedSet.delete(e.code);
+                sendRequest(keyPressedSet);
+            }
+        });
+        document.addEventListener('keydown', (e) => {
+          keyPressedSet.add(e.code);
+          sendRequest(keyPressedSet);
+        });
+    </script>
     </body>
 </html>
-
-
-
